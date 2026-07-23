@@ -1,33 +1,20 @@
-html, body { width:100%; height:100%; min-height:100%; overflow:hidden; background:#f7a0b2; }
-.main-menu {
-  position:fixed; inset:0; z-index:9999;
-  background:#f7a0b2; overflow:hidden; opacity:1;
-  transition:opacity .36s ease, transform .36s ease;
-}
+html, body { width:100%; height:100%; overflow:hidden; }
+.main-menu { position:fixed; inset:0; z-index:9999; background:#f7a0b2; overflow:hidden; opacity:1; transition:opacity .36s ease, transform .36s ease; }
 .main-menu.menu-leaving { opacity:0; transform:scale(1.025); pointer-events:none; }
-
-/*
- * 封面原图比例为 3:2。这里使用 contain 逻辑：
- * 任何电脑、平板或手机都完整显示整张封面，不再裁掉标题、人物或按钮。
- */
-.main-menu-cover,
+.main-menu-cover {
+  position:absolute; left:50%; top:50%;
+  width:min(100vw, calc(100vh * 3 / 2));
+  height:min(100vh, calc(100vw * 2 / 3));
+  transform:translate(-50%, -50%); object-fit:fill;
+  user-select:none; -webkit-user-drag:none;
+}
+/* 菜单按钮直接放在封面预留的空白面板内。 */
 .menu-actions {
   position:absolute; left:50%; top:50%;
-  width:min(100vw, calc(100dvh * 3 / 2));
-  height:min(100dvh, calc(100vw * 2 / 3));
+  width:min(100vw, calc(100vh * 3 / 2));
+  height:min(100vh, calc(100vw * 2 / 3));
   transform:translate(-50%, -50%);
-}
-.main-menu-cover {
-  object-fit:fill; user-select:none; -webkit-user-drag:none;
-}
-/* 菜单按钮与封面共用同一个 3:2 坐标画布，缩放后仍然准确对齐。 */
-.menu-actions { pointer-events:none; }
-
-@supports not (height: 100dvh) {
-  .main-menu-cover, .menu-actions {
-    width:min(100vw, calc(100vh * 3 / 2));
-    height:min(100vh, calc(100vw * 2 / 3));
-  }
+  pointer-events:none;
 }
 .menu-action {
   position:absolute; left:55.0%; width:31.5%; height:10.0%;
@@ -71,122 +58,14 @@ html, body { width:100%; height:100%; min-height:100%; overflow:hidden; backgrou
 @keyframes dialogPop { from { opacity:0; transform:translateY(18px) scale(.94); } to { opacity:1; transform:none; } }
 
 
-/* 窄屏保护：保持按钮文字完整并避免浏览器自动放大。 */
-@media (max-aspect-ratio: 3/2) {
-  .menu-action {
-    border-width:clamp(1px, .18vw, 3px);
-    box-shadow:0 clamp(2px,.45vw,7px) 0 rgba(163,65,62,.30), inset 0 0 0 clamp(2px,.35vw,5px) rgba(255,255,255,.68);
-    font-size:clamp(8px, 2.2vw, 24px);
-  }
-  .menu-action::after { border-width:clamp(1px,.12vw,2px); }
-}
-
-
-/* =========================================================
-   全设备完整显示版
-   - 封面始终完整显示，不裁切。
-   - 游戏按 1366 x 768 等比例缩放并居中。
-   - 多出来的区域显示粉色边框，不再遮挡内容。
-   - 手机竖屏提示旋转横屏；横屏后即可完整操作。
-========================================================= */
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  background: #f59bb0;
-}
-
-.main-menu {
-  display: grid;
-  place-items: center;
-  background: #f59bb0;
-}
-
-.main-menu-cover,
-.menu-actions {
-  width: min(100vw, calc(100dvh * 3 / 2));
-  height: min(100dvh, calc(100vw * 2 / 3));
-  max-width: 100vw;
-  max-height: 100dvh;
-}
-
-.game-fit-viewport {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at center, rgba(255,255,255,.22), transparent 62%),
-    #f59bb0;
-}
-
-#game.game-fit-canvas {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1366px !important;
-  height: 768px !important;
-  min-width: 1366px !important;
-  min-height: 768px !important;
-  transform-origin: top left !important;
-  overflow: hidden !important;
-}
-
-#game.game-fit-canvas > section,
-#game.game-fit-canvas .intro-scene,
-#game.game-fit-canvas .kitchen-scene,
-#game.game-fit-canvas .decorate-scene,
-#game.game-fit-canvas .candle-scene {
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 0 !important;
-}
-
-.rotate-device-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 12000;
-  display: none;
-  place-items: center;
-  padding: 24px;
-  box-sizing: border-box;
-  text-align: center;
-  color: #633322;
-  background: linear-gradient(145deg, #ffc6d3, #f49ab0);
-}
-.rotate-device-card {
-  width: min(330px, 88vw);
-  padding: 28px 24px;
-  border: 4px solid rgba(255,255,255,.9);
-  border-radius: 28px;
-  background: rgba(255,248,240,.96);
-  box-shadow: 0 18px 55px rgba(96,37,51,.28);
-}
-.rotate-device-icon { font-size: 58px; line-height: 1; }
-.rotate-device-card h2 { margin: 16px 0 10px; font-size: 25px; }
-.rotate-device-card p { margin: 0 0 18px; line-height: 1.65; font-size: 16px; }
-.rotate-device-card button {
-  border: 0;
-  border-radius: 999px;
-  padding: 12px 22px;
-  color: white;
-  background: linear-gradient(#f78ea4,#e86d88);
-  font-size: 17px;
-  font-weight: 800;
-  box-shadow: 0 6px 0 rgba(131,52,66,.22);
-}
-
-@media (max-width: 700px) and (orientation: portrait) {
-  .rotate-device-overlay { display: grid; }
-}
-
-@supports not (height: 100dvh) {
-  .main-menu-cover,
-  .menu-actions {
-    width: min(100vw, calc(100vh * 3 / 2));
-    height: min(100vh, calc(100vw * 2 / 3));
-    max-height: 100vh;
+/* Desktop-stable V5: preserve the original desktop game layout.
+   Only the cover uses contain sizing, so the whole cover is visible.
+   Extra space becomes a pink frame instead of cropping content. */
+@media (min-width: 801px) {
+  html, body { background:#f7a0b2 !important; overflow:hidden !important; }
+  .main-menu { background:#f7a0b2 !important; }
+  .main-menu-cover, .menu-actions {
+    width:min(100vw, calc(100vh * 3 / 2)) !important;
+    height:min(100vh, calc(100vw * 2 / 3)) !important;
   }
 }

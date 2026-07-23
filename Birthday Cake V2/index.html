@@ -2,13 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Birthday Cake</title>
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style-model-v16.css?v=16">
-    <link rel="stylesheet" href="css/ui.css?v=fit-all-v4">
+    <link rel="stylesheet" href="css/ui.css?v=desktop-v5">
     <link rel="stylesheet" href="css/animation.css">
 </head>
 
@@ -891,63 +891,5 @@
         };
     });
 })();
-</script>
-<div id="rotateDeviceOverlay" class="rotate-device-overlay" aria-live="polite">
-  <div class="rotate-device-card">
-    <div class="rotate-device-icon">📱↻</div>
-    <h2>请把手机横过来</h2>
-    <p>横屏后，游戏会完整显示，所有按钮都可以点击。也可以点下面的按钮尝试自动进入横屏。</p>
-    <button id="tryLandscapeBtn" type="button">尝试进入横屏</button>
-  </div>
-</div>
-<script>
-(function () {
-    const DESIGN_WIDTH = 1366;
-    const DESIGN_HEIGHT = 768;
-    const game = document.getElementById('game');
-    if (!game) return;
-
-    const viewport = document.createElement('div');
-    viewport.className = 'game-fit-viewport';
-    game.parentNode.insertBefore(viewport, game);
-    viewport.appendChild(game);
-    game.classList.add('game-fit-canvas');
-
-    function fitGame() {
-        const visual = window.visualViewport;
-        const w = Math.max(1, visual ? visual.width : window.innerWidth);
-        const h = Math.max(1, visual ? visual.height : window.innerHeight);
-        const scale = Math.min(w / DESIGN_WIDTH, h / DESIGN_HEIGHT);
-        const left = Math.max(0, (w - DESIGN_WIDTH * scale) / 2);
-        const top = Math.max(0, (h - DESIGN_HEIGHT * scale) / 2);
-        game.style.transform = `translate(${left}px, ${top}px) scale(${scale})`;
-    }
-
-    const tryLandscapeBtn = document.getElementById('tryLandscapeBtn');
-    if (tryLandscapeBtn) {
-        tryLandscapeBtn.addEventListener('click', async () => {
-            try {
-                if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
-                    await document.documentElement.requestFullscreen();
-                }
-            } catch (_) {}
-            try {
-                if (screen.orientation && screen.orientation.lock) {
-                    await screen.orientation.lock('landscape');
-                }
-            } catch (_) {}
-            setTimeout(fitGame, 250);
-        });
-    }
-
-    fitGame();
-    window.addEventListener('resize', fitGame, { passive: true });
-    window.addEventListener('orientationchange', () => setTimeout(fitGame, 250), { passive: true });
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', fitGame, { passive: true });
-    }
-})();
-</script>
-
-</body>
+</script></body>
 </html>
