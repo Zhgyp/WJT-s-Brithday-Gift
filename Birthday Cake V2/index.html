@@ -8,14 +8,68 @@
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style-model-v16.css?v=16">
-    <link rel="stylesheet" href="css/ui.css?v=mobile-scroll-v7">
+    <link rel="stylesheet" href="css/ui.css?v=desktop-v6-mobile-scroll-v8">
     <link rel="stylesheet" href="css/animation.css">
+
+<style id="desktop-cover-lock-v9">
+/* V9 authoritative desktop/tablet cover lock: inline so old cached CSS cannot override it. */
+@media (min-width: 701px) {
+  html, body {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    background: #f39ab0 !important;
+  }
+  #mainMenu.main-menu {
+    position: fixed !important;
+    inset: 0 !important;
+    overflow: hidden !important;
+    display: block !important;
+    background: linear-gradient(135deg,#f18aa4,#f8b1c1 52%,#ee7f9c) !important;
+  }
+  #mainMenu.main-menu::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 24px !important;
+    border: 14px solid rgba(255,225,233,.95) !important;
+    border-radius: 42px !important;
+    box-shadow: inset 0 0 0 5px rgba(255,255,255,.35), 0 18px 55px rgba(133,35,67,.22) !important;
+    pointer-events: none !important;
+  }
+  #mainMenu > .main-menu-cover,
+  #mainMenu > .menu-actions {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    width: min(calc(100vw - 220px), calc((100vh - 150px) * 1.5)) !important;
+    height: auto !important;
+    aspect-ratio: 3 / 2 !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+  #mainMenu > .main-menu-cover {
+    object-fit: contain !important;
+    border-radius: 28px !important;
+    box-shadow: 0 0 0 12px rgba(255,220,229,.98), 0 0 0 24px rgba(220,86,121,.78), 0 28px 70px rgba(111,35,59,.33) !important;
+  }
+}
+@media (min-width: 701px) and (max-height: 760px) {
+  #mainMenu > .main-menu-cover,
+  #mainMenu > .menu-actions {
+    width: min(calc(100vw - 180px), calc((100vh - 110px) * 1.5)) !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
 
 <div id="mainMenu" class="main-menu" aria-label="游戏主菜单">
-    <img class="main-menu-cover" src="assets/menu-cover.png" alt="婷婷的烘焙日记封面">
+    <img class="main-menu-cover" src="assets/menu-cover.png?v=9" alt="婷婷的烘焙日记封面">
     <div class="menu-actions" aria-label="菜单操作">
         <button id="menuStart" class="menu-action" type="button"><span class="menu-action-icon">🧁</span><span>开始游戏</span></button>
         <button id="menuHelp" class="menu-action" type="button"><span class="menu-action-icon">📖</span><span>游戏说明</span></button>
@@ -897,66 +951,76 @@
   const game = document.getElementById('game');
   if (!game) return;
 
-  let shell = null;
-  let scaler = null;
+  let viewport = null;
+  let canvas = null;
   let hint = null;
 
   const isPhonePortrait = () =>
     window.matchMedia('(max-width: 600px) and (orientation: portrait)').matches;
 
-  const updateStage = () => {
+  function mountMobileStage() {
+    if (viewport) return;
+
+    viewport = document.createElement('div');
+    viewport.className = 'mobile-game-viewport';
+    viewport.setAttribute('aria-label', '可左右滑动查看的游戏舞台');
+
+    canvas = document.createElement('div');
+    canvas.className = 'mobile-game-canvas';
+
+    game.parentNode.insertBefore(viewport, game);
+    viewport.appendChild(canvas);
+    canvas.appendChild(game);
+
+    hint = document.createElement('div');
+    hint.className = 'mobile-pan-hint';
+    hint.textContent = '↔ 左右滑动查看完整游戏';
+    document.body.appendChild(hint);
+
+    viewport.addEventListener('scroll', () => {
+      if (viewport.scrollLeft > 18) hint?.classList.add('is-hidden');
+    }, { passive: true });
+  }
+
+  function unmountMobileStage() {
+    if (!viewport || !canvas) return;
+    viewport.parentNode.insertBefore(game, viewport);
+    viewport.remove();
+    hint?.remove();
+    viewport = canvas = hint = null;
+    game.style.removeProperty('transform');
+  }
+
+  function resizeMobileStage() {
     if (!isPhonePortrait()) {
-      if (shell && scaler) {
-        shell.parentNode.insertBefore(game, shell);
-        shell.remove();
-        hint?.remove();
-        shell = scaler = hint = null;
-        game.style.removeProperty('width');
-        game.style.removeProperty('height');
-      }
+      unmountMobileStage();
       return;
     }
 
-    if (!shell) {
-      shell = document.createElement('div');
-      shell.className = 'mobile-stage-shell';
-      shell.setAttribute('aria-label', '可左右滑动的游戏舞台');
+    mountMobileStage();
 
-      scaler = document.createElement('div');
-      scaler.className = 'mobile-stage-scaler';
+    const visualHeight = window.visualViewport?.height || window.innerHeight;
+    const scale = Math.min(1, Math.max(0.58, visualHeight / 720));
+    const scaledWidth = Math.round(1280 * scale);
+    const scaledHeight = Math.round(720 * scale);
 
-      game.parentNode.insertBefore(shell, game);
-      shell.appendChild(scaler);
-      scaler.appendChild(game);
+    canvas.style.width = `${scaledWidth}px`;
+    canvas.style.height = `${scaledHeight}px`;
+    game.style.transform = `scale(${scale})`;
+  }
 
-      hint = document.createElement('div');
-      hint.className = 'mobile-pan-hint';
-      hint.textContent = '↔ 左右滑动查看完整游戏';
-      document.body.appendChild(hint);
-
-      shell.addEventListener('scroll', () => {
-        if (shell.scrollLeft > 20) hint?.classList.add('is-hidden');
-      }, { passive: true });
-    }
-
-    const availableH = Math.max(360, window.visualViewport?.height || window.innerHeight);
-    const scale = Math.min(1, availableH / 720);
-    scaler.style.width = `${1280 * scale}px`;
-    scaler.style.height = `${720 * scale}px`;
-    scaler.style.transform = `scale(${scale})`;
-  };
-
-  updateStage();
-  window.addEventListener('resize', updateStage, { passive: true });
-  window.visualViewport?.addEventListener('resize', updateStage, { passive: true });
+  resizeMobileStage();
+  window.addEventListener('resize', resizeMobileStage, { passive: true });
+  window.visualViewport?.addEventListener('resize', resizeMobileStage, { passive: true });
 
   document.getElementById('menuStart')?.addEventListener('click', () => {
     setTimeout(() => {
-      updateStage();
-      if (shell) shell.scrollLeft = 0;
+      resizeMobileStage();
+      if (viewport) viewport.scrollLeft = 0;
     }, 420);
   });
 })();
 </script>
+
 </body>
 </html>
