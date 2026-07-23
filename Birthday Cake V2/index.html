@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style-model-v16.css?v=16">
-    <link rel="stylesheet" href="css/ui.css?v=pink-frame-v6">
+    <link rel="stylesheet" href="css/ui.css?v=mobile-scroll-v7">
     <link rel="stylesheet" href="css/animation.css">
 </head>
 
@@ -891,5 +891,72 @@
         };
     });
 })();
-</script></body>
+</script>
+<script>
+(() => {
+  const game = document.getElementById('game');
+  if (!game) return;
+
+  let shell = null;
+  let scaler = null;
+  let hint = null;
+
+  const isPhonePortrait = () =>
+    window.matchMedia('(max-width: 600px) and (orientation: portrait)').matches;
+
+  const updateStage = () => {
+    if (!isPhonePortrait()) {
+      if (shell && scaler) {
+        shell.parentNode.insertBefore(game, shell);
+        shell.remove();
+        hint?.remove();
+        shell = scaler = hint = null;
+        game.style.removeProperty('width');
+        game.style.removeProperty('height');
+      }
+      return;
+    }
+
+    if (!shell) {
+      shell = document.createElement('div');
+      shell.className = 'mobile-stage-shell';
+      shell.setAttribute('aria-label', '可左右滑动的游戏舞台');
+
+      scaler = document.createElement('div');
+      scaler.className = 'mobile-stage-scaler';
+
+      game.parentNode.insertBefore(shell, game);
+      shell.appendChild(scaler);
+      scaler.appendChild(game);
+
+      hint = document.createElement('div');
+      hint.className = 'mobile-pan-hint';
+      hint.textContent = '↔ 左右滑动查看完整游戏';
+      document.body.appendChild(hint);
+
+      shell.addEventListener('scroll', () => {
+        if (shell.scrollLeft > 20) hint?.classList.add('is-hidden');
+      }, { passive: true });
+    }
+
+    const availableH = Math.max(360, window.visualViewport?.height || window.innerHeight);
+    const scale = Math.min(1, availableH / 720);
+    scaler.style.width = `${1280 * scale}px`;
+    scaler.style.height = `${720 * scale}px`;
+    scaler.style.transform = `scale(${scale})`;
+  };
+
+  updateStage();
+  window.addEventListener('resize', updateStage, { passive: true });
+  window.visualViewport?.addEventListener('resize', updateStage, { passive: true });
+
+  document.getElementById('menuStart')?.addEventListener('click', () => {
+    setTimeout(() => {
+      updateStage();
+      if (shell) shell.scrollLeft = 0;
+    }, 420);
+  });
+})();
+</script>
+</body>
 </html>
