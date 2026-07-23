@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style-model-v16.css?v=16">
-    <link rel="stylesheet" href="css/ui.css?v=mobile-landscape-3">
+    <link rel="stylesheet" href="css/ui.css?v=fit-all-v4">
     <link rel="stylesheet" href="css/animation.css">
 </head>
 
@@ -892,64 +892,59 @@
     });
 })();
 </script>
+<div id="rotateDeviceOverlay" class="rotate-device-overlay" aria-live="polite">
+  <div class="rotate-device-card">
+    <div class="rotate-device-icon">📱↻</div>
+    <h2>请把手机横过来</h2>
+    <p>横屏后，游戏会完整显示，所有按钮都可以点击。也可以点下面的按钮尝试自动进入横屏。</p>
+    <button id="tryLandscapeBtn" type="button">尝试进入横屏</button>
+  </div>
+</div>
 <script>
 (function () {
-    const MOBILE_LIMIT = 980;
     const DESIGN_WIDTH = 1366;
     const DESIGN_HEIGHT = 768;
     const game = document.getElementById('game');
-    const mainMenu = document.getElementById('mainMenu');
-    // Use CSS viewport width instead of screen.width. Some Android/WeChat browsers
-    // report physical pixels (for example 1080px), which incorrectly bypassed mobile mode.
-    const initialViewportWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-    const isTouchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-    if (!game || (!isTouchDevice && initialViewportWidth > MOBILE_LIMIT)) return;
-
-    function fitMainMenu() {
-        if (!mainMenu) return;
-        const visual = window.visualViewport;
-        const screenW = visual ? visual.width : window.innerWidth;
-        const screenH = visual ? visual.height : window.innerHeight;
-        const portrait = screenH > screenW;
-        mainMenu.classList.toggle('mobile-menu-landscape', portrait);
-        const availableW = portrait ? screenH : screenW;
-        const availableH = portrait ? screenW : screenH;
-        const menuW = Math.min(availableW, availableH * 1.5);
-        const menuH = menuW / 1.5;
-        mainMenu.style.setProperty('--mobile-menu-w', menuW + 'px');
-        mainMenu.style.setProperty('--mobile-menu-h', menuH + 'px');
-    }
+    if (!game) return;
 
     const viewport = document.createElement('div');
-    viewport.className = 'mobile-game-viewport';
+    viewport.className = 'game-fit-viewport';
     game.parentNode.insertBefore(viewport, game);
     viewport.appendChild(game);
-    game.classList.add('mobile-fit-canvas');
+    game.classList.add('game-fit-canvas');
 
-    function fitMobileGame() {
+    function fitGame() {
         const visual = window.visualViewport;
-        const screenW = visual ? visual.width : window.innerWidth;
-        const screenH = visual ? visual.height : window.innerHeight;
-        const portrait = screenH > screenW;
-
-        viewport.classList.toggle('is-portrait', portrait);
-
-        // 竖屏时先把可用区域交换，再把整个游戏旋转 90 度。
-        const availableW = portrait ? screenH : screenW;
-        const availableH = portrait ? screenW : screenH;
-        const scale = Math.min(availableW / DESIGN_WIDTH, availableH / DESIGN_HEIGHT);
-        const left = Math.max(0, (availableW - DESIGN_WIDTH * scale) / 2);
-        const top = Math.max(0, (availableH - DESIGN_HEIGHT * scale) / 2);
-
+        const w = Math.max(1, visual ? visual.width : window.innerWidth);
+        const h = Math.max(1, visual ? visual.height : window.innerHeight);
+        const scale = Math.min(w / DESIGN_WIDTH, h / DESIGN_HEIGHT);
+        const left = Math.max(0, (w - DESIGN_WIDTH * scale) / 2);
+        const top = Math.max(0, (h - DESIGN_HEIGHT * scale) / 2);
         game.style.transform = `translate(${left}px, ${top}px) scale(${scale})`;
     }
 
-    fitMainMenu();
-    fitMobileGame();
-    window.addEventListener('resize', () => { fitMainMenu(); fitMobileGame(); }, { passive: true });
-    window.addEventListener('orientationchange', () => setTimeout(() => { fitMainMenu(); fitMobileGame(); }, 180), { passive: true });
+    const tryLandscapeBtn = document.getElementById('tryLandscapeBtn');
+    if (tryLandscapeBtn) {
+        tryLandscapeBtn.addEventListener('click', async () => {
+            try {
+                if (document.documentElement.requestFullscreen && !document.fullscreenElement) {
+                    await document.documentElement.requestFullscreen();
+                }
+            } catch (_) {}
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('landscape');
+                }
+            } catch (_) {}
+            setTimeout(fitGame, 250);
+        });
+    }
+
+    fitGame();
+    window.addEventListener('resize', fitGame, { passive: true });
+    window.addEventListener('orientationchange', () => setTimeout(fitGame, 250), { passive: true });
     if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', () => { fitMainMenu(); fitMobileGame(); }, { passive: true });
+        window.visualViewport.addEventListener('resize', fitGame, { passive: true });
     }
 })();
 </script>

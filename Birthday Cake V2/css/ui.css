@@ -81,33 +81,51 @@ html, body { width:100%; height:100%; min-height:100%; overflow:hidden; backgrou
   .menu-action::after { border-width:clamp(1px,.12vw,2px); }
 }
 
+
 /* =========================================================
-   手机专用：自动横屏画布 + 整体缩放
-   - 竖着拿手机时，游戏画面自动旋转为横屏方向。
-   - 所有游戏场景按 1366 x 768 的完整画布等比缩放，按钮不会跑出屏幕。
-   - 不依赖浏览器的“锁定横屏”权限。
+   全设备完整显示版
+   - 封面始终完整显示，不裁切。
+   - 游戏按 1366 x 768 等比例缩放并居中。
+   - 多出来的区域显示粉色边框，不再遮挡内容。
+   - 手机竖屏提示旋转横屏；横屏后即可完整操作。
 ========================================================= */
-.mobile-game-viewport {
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #f59bb0;
+}
+
+.main-menu {
+  display: grid;
+  place-items: center;
+  background: #f59bb0;
+}
+
+.main-menu-cover,
+.menu-actions {
+  width: min(100vw, calc(100dvh * 3 / 2));
+  height: min(100dvh, calc(100vw * 2 / 3));
+  max-width: 100vw;
+  max-height: 100dvh;
+}
+
+.game-fit-viewport {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  display: grid;
+  place-items: center;
   overflow: hidden;
-  background: #d7ac87;
-  touch-action: none;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,.22), transparent 62%),
+    #f59bb0;
 }
-.mobile-game-viewport.is-portrait {
-  width: 100dvh;
-  height: 100dvw;
-  inset: auto;
+
+#game.game-fit-canvas {
+  position: absolute;
   left: 0;
   top: 0;
-  transform-origin: top left;
-  transform: rotate(90deg) translateY(-100%);
-}
-.mobile-fit-canvas {
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
   width: 1366px !important;
   height: 768px !important;
   min-width: 1366px !important;
@@ -115,61 +133,60 @@ html, body { width:100%; height:100%; min-height:100%; overflow:hidden; backgrou
   transform-origin: top left !important;
   overflow: hidden !important;
 }
-.mobile-fit-canvas > section {
+
+#game.game-fit-canvas > section,
+#game.game-fit-canvas .intro-scene,
+#game.game-fit-canvas .kitchen-scene,
+#game.game-fit-canvas .decorate-scene,
+#game.game-fit-canvas .candle-scene {
   width: 100% !important;
   height: 100% !important;
   min-height: 0 !important;
 }
-.mobile-fit-canvas .kitchen-scene,
-.mobile-fit-canvas .intro-scene,
-.mobile-fit-canvas .decorate-scene,
-.mobile-fit-canvas .candle-scene {
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 0 !important;
+
+.rotate-device-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: none;
+  place-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  text-align: center;
+  color: #633322;
+  background: linear-gradient(145deg, #ffc6d3, #f49ab0);
+}
+.rotate-device-card {
+  width: min(330px, 88vw);
+  padding: 28px 24px;
+  border: 4px solid rgba(255,255,255,.9);
+  border-radius: 28px;
+  background: rgba(255,248,240,.96);
+  box-shadow: 0 18px 55px rgba(96,37,51,.28);
+}
+.rotate-device-icon { font-size: 58px; line-height: 1; }
+.rotate-device-card h2 { margin: 16px 0 10px; font-size: 25px; }
+.rotate-device-card p { margin: 0 0 18px; line-height: 1.65; font-size: 16px; }
+.rotate-device-card button {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 22px;
+  color: white;
+  background: linear-gradient(#f78ea4,#e86d88);
+  font-size: 17px;
+  font-weight: 800;
+  box-shadow: 0 6px 0 rgba(131,52,66,.22);
+}
+
+@media (max-width: 700px) and (orientation: portrait) {
+  .rotate-device-overlay { display: grid; }
 }
 
 @supports not (height: 100dvh) {
-  .mobile-game-viewport.is-portrait {
-    width: 100vh;
-    height: 100vw;
-  }
-}
-
-
-/* v2: 主菜单也参与手机竖屏自动横向显示。之前仅旋转 #game，封面在 #game 外，因此看起来没有变化。 */
-@media (max-width: 980px) and (orientation: portrait) {
-  .main-menu.mobile-menu-landscape {
-    inset: auto !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100dvh !important;
-    height: 100dvw !important;
-    transform-origin: top left !important;
-    transform: rotate(90deg) translateY(-100%) !important;
-  }
-  .main-menu.mobile-menu-landscape.menu-leaving {
-    opacity: 0;
-    transform: rotate(90deg) translateY(-100%) scale(1.015) !important;
-  }
-  .main-menu.mobile-menu-landscape .main-menu-cover,
-  .main-menu.mobile-menu-landscape .menu-actions {
-    width: var(--mobile-menu-w) !important;
-    height: var(--mobile-menu-h) !important;
-  }
-  .main-menu.mobile-menu-landscape .menu-action {
-    font-size: clamp(13px, 2.8dvh, 28px) !important;
-  }
-  .main-menu.mobile-menu-landscape .menu-modal {
-    position: fixed;
-    inset: 0;
-  }
-}
-@supports not (height: 100dvh) {
-  @media (max-width: 980px) and (orientation: portrait) {
-    .main-menu.mobile-menu-landscape {
-      width: 100vh !important;
-      height: 100vw !important;
-    }
+  .main-menu-cover,
+  .menu-actions {
+    width: min(100vw, calc(100vh * 3 / 2));
+    height: min(100vh, calc(100vw * 2 / 3));
+    max-height: 100vh;
   }
 }
