@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style-model-v16.css?v=16">
-    <link rel="stylesheet" href="css/ui.css?v=responsive-1">
+    <link rel="stylesheet" href="css/ui.css?v=mobile-landscape-3">
     <link rel="stylesheet" href="css/animation.css">
 </head>
 
@@ -898,7 +898,27 @@
     const DESIGN_WIDTH = 1366;
     const DESIGN_HEIGHT = 768;
     const game = document.getElementById('game');
-    if (!game || Math.min(screen.width || innerWidth, screen.height || innerHeight) > MOBILE_LIMIT) return;
+    const mainMenu = document.getElementById('mainMenu');
+    // Use CSS viewport width instead of screen.width. Some Android/WeChat browsers
+    // report physical pixels (for example 1080px), which incorrectly bypassed mobile mode.
+    const initialViewportWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+    const isTouchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (!game || (!isTouchDevice && initialViewportWidth > MOBILE_LIMIT)) return;
+
+    function fitMainMenu() {
+        if (!mainMenu) return;
+        const visual = window.visualViewport;
+        const screenW = visual ? visual.width : window.innerWidth;
+        const screenH = visual ? visual.height : window.innerHeight;
+        const portrait = screenH > screenW;
+        mainMenu.classList.toggle('mobile-menu-landscape', portrait);
+        const availableW = portrait ? screenH : screenW;
+        const availableH = portrait ? screenW : screenH;
+        const menuW = Math.min(availableW, availableH * 1.5);
+        const menuH = menuW / 1.5;
+        mainMenu.style.setProperty('--mobile-menu-w', menuW + 'px');
+        mainMenu.style.setProperty('--mobile-menu-h', menuH + 'px');
+    }
 
     const viewport = document.createElement('div');
     viewport.className = 'mobile-game-viewport';
@@ -924,11 +944,12 @@
         game.style.transform = `translate(${left}px, ${top}px) scale(${scale})`;
     }
 
+    fitMainMenu();
     fitMobileGame();
-    window.addEventListener('resize', fitMobileGame, { passive: true });
-    window.addEventListener('orientationchange', () => setTimeout(fitMobileGame, 180), { passive: true });
+    window.addEventListener('resize', () => { fitMainMenu(); fitMobileGame(); }, { passive: true });
+    window.addEventListener('orientationchange', () => setTimeout(() => { fitMainMenu(); fitMobileGame(); }, 180), { passive: true });
     if (window.visualViewport) {
-        window.visualViewport.addEventListener('resize', fitMobileGame, { passive: true });
+        window.visualViewport.addEventListener('resize', () => { fitMainMenu(); fitMobileGame(); }, { passive: true });
     }
 })();
 </script>
