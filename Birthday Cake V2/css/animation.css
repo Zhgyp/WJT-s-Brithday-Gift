@@ -1,0 +1,350 @@
+@keyframes floatStars {
+    0% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+}
+
+@keyframes arrowMove {
+    from {
+        transform: translateY(-2px);
+    }
+
+    to {
+        transform: translateY(3px);
+    }
+}
+/* =========================
+   鸡蛋制作动画
+========================= */
+
+.egg-animation.is-playing {
+    animation: eggAppear 0.45s ease forwards;
+}
+
+.egg-animation.is-playing .egg-shell-left,
+.egg-animation.is-playing .egg-shell-right {
+    animation: eggTap 0.42s ease 0.45s 2;
+}
+
+.egg-animation.is-playing .egg-crack {
+    animation: crackAppear 0.28s ease 1.14s forwards;
+}
+
+.egg-animation.is-playing .egg-shell-left {
+    animation:
+        eggTap 0.42s ease 0.45s 2,
+        shellOpenLeft 0.38s ease 1.42s forwards;
+}
+
+.egg-animation.is-playing .egg-shell-right {
+    animation:
+        eggTap 0.42s ease 0.45s 2,
+        shellOpenRight 0.38s ease 1.42s forwards;
+}
+
+.egg-animation.is-playing .egg-white-stream {
+    animation: eggWhiteFlow 1.12s ease 1.55s forwards;
+}
+
+.egg-animation.is-playing .egg-yolk {
+    animation: yolkFall 0.78s cubic-bezier(.42, 0, .65, 1.25) 1.65s forwards;
+}
+
+.egg-animation.is-playing .egg-drop {
+    animation: lastEggDrop 0.44s ease 2.45s forwards;
+}
+
+.egg-animation.is-finished {
+    opacity: 0;
+}
+
+@keyframes eggAppear {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -85px) scale(0.72);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translate(-50%, 8px) scale(1.04);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+}
+
+@keyframes eggTap {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    45% {
+        transform: translateY(27px) rotate(-3deg);
+    }
+
+    65% {
+        transform: translateY(20px);
+    }
+}
+
+@keyframes crackAppear {
+    from {
+        opacity: 0;
+        transform: scaleY(0.15);
+    }
+
+    to {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+}
+
+@keyframes shellOpenLeft {
+    from {
+        transform: translateX(0) rotate(0);
+    }
+
+    to {
+        transform: translate(-32px, -5px) rotate(-28deg);
+    }
+}
+
+@keyframes shellOpenRight {
+    from {
+        transform: translateX(0) rotate(0);
+    }
+
+    to {
+        transform: translate(32px, -5px) rotate(28deg);
+    }
+}
+
+@keyframes eggWhiteFlow {
+    0% {
+        height: 0;
+        opacity: 0;
+        transform: scaleX(0.7);
+    }
+
+    18% {
+        height: 78px;
+        opacity: 1;
+    }
+
+    70% {
+        height: 135px;
+        opacity: 0.9;
+        transform: scaleX(1);
+    }
+
+    100% {
+        height: 150px;
+        opacity: 0;
+        transform: scaleX(0.45);
+    }
+}
+
+@keyframes yolkFall {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.7);
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    75% {
+        opacity: 1;
+        transform: translateY(112px) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(150px) scale(0.86);
+    }
+}
+
+@keyframes lastEggDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.8);
+    }
+}
+/* =========================
+   牛奶倾倒动画
+========================= */
+
+.milk-animation.is-playing {
+    animation: milkCartonEnter 0.55s ease forwards;
+}
+
+.milk-animation.is-playing .milk-carton {
+    animation:
+        milkCartonTilt 0.55s ease 0.62s forwards,
+        milkCartonReturn 0.5s ease 2.75s forwards;
+}
+
+.milk-animation.is-playing .milk-spout {
+    animation: milkSpoutOpen 0.28s ease 1.03s forwards;
+}
+
+.milk-animation.is-playing .milk-stream {
+    animation: milkPourStream 1.48s ease 1.22s forwards;
+}
+
+.milk-animation.is-playing .milk-last-drop {
+    animation: milkFinalDrop 0.42s ease 2.58s forwards;
+}
+
+.milk-animation.is-finished {
+    opacity: 0;
+}
+
+@keyframes milkCartonEnter {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -70px) scale(0.72);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translate(-50%, 8px) scale(1.04);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+}
+
+@keyframes milkCartonTilt {
+    from {
+        transform: rotate(0deg) translate(0, 0);
+    }
+
+    to {
+        transform: rotate(-48deg) translate(-5px, 15px);
+    }
+}
+
+@keyframes milkCartonReturn {
+    from {
+        transform: rotate(-48deg) translate(-5px, 15px);
+    }
+
+    to {
+        transform: rotate(0deg) translate(0, 0);
+    }
+}
+
+@keyframes milkSpoutOpen {
+    0% {
+        opacity: 0;
+        transform: rotate(0deg) scaleY(0.25);
+    }
+
+    100% {
+        opacity: 1;
+        transform: rotate(-30deg) scaleY(1);
+    }
+}
+
+@keyframes milkPourStream {
+    0% {
+        height: 0;
+        opacity: 0;
+        transform: rotate(7deg) scaleX(0.55);
+    }
+
+    12% {
+        height: 88px;
+        opacity: 1;
+    }
+
+    38% {
+        height: 165px;
+        opacity: 1;
+        transform: rotate(9deg) scaleX(1);
+    }
+
+    78% {
+        height: 175px;
+        opacity: 0.95;
+        transform: rotate(6deg) scaleX(0.82);
+    }
+
+    100% {
+        height: 185px;
+        opacity: 0;
+        transform: rotate(5deg) scaleX(0.25);
+    }
+}
+
+@keyframes milkFinalDrop {
+    0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.45);
+    }
+
+    28% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(58px) scale(0.8);
+    }
+}
+
+@keyframes milkSpreadInBowl {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.2);
+    }
+
+    35% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) scale(7, 2.5);
+    }
+}
+/* 动画结束后隐藏 */
+
+.egg-animation.is-finished {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.milk-animation.is-finished {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}

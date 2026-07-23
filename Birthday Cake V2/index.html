@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+
+    <title>Birthday Cake</title>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style-model-v16.css?v=16">
+    <link rel="stylesheet" href="css/ui.css?v=responsive-1">
+    <link rel="stylesheet" href="css/animation.css">
+</head>
+
+<body>
+
+<div id="mainMenu" class="main-menu" aria-label="游戏主菜单">
+    <img class="main-menu-cover" src="assets/menu-cover.png" alt="婷婷的烘焙日记封面">
+    <div class="menu-actions" aria-label="菜单操作">
+        <button id="menuStart" class="menu-action" type="button"><span class="menu-action-icon">🧁</span><span>开始游戏</span></button>
+        <button id="menuHelp" class="menu-action" type="button"><span class="menu-action-icon">📖</span><span>游戏说明</span></button>
+        <button id="menuMusic" class="menu-action" type="button"><span class="menu-action-icon">🎵</span><span>音乐设置</span></button>
+        <button id="menuExit" class="menu-action" type="button"><span class="menu-action-icon">🚪</span><span>退出游戏</span></button>
+    </div>
+    <div id="menuModal" class="menu-modal" hidden>
+        <div class="menu-dialog" role="dialog" aria-modal="true" aria-labelledby="menuDialogTitle">
+            <button id="menuClose" class="menu-close" type="button" aria-label="关闭">×</button>
+            <div id="menuPanel"></div>
+        </div>
+    </div>
+    <audio id="menuBgm" src="assets/bgm.mp3" loop preload="auto"></audio>
+</div>
+
+
+    <div id="game">
+
+        <section id="cover">
+
+            <h1>🎂 Birthday Cake</h1>
+
+            <p class="subtitle">
+                一份张钰萍送给王靖婷的生日礼物
+            </p>
+
+            <p class="date">
+                2025 · 7 · 24
+            </p>
+
+            <button id="startBtn" type="button">
+                开始制作蛋糕
+            </button>
+
+        </section>
+
+        <section id="intro" hidden>
+            <div class="intro-scene">
+
+                <div class="intro-room" aria-hidden="true">
+                    <div class="intro-window">
+                        <div class="intro-window-sky"></div>
+                        <div class="intro-window-frame"></div>
+                        <div class="intro-curtain intro-curtain-left"></div>
+                        <div class="intro-curtain intro-curtain-right"></div>
+                    </div>
+                    <div class="intro-wall-dots"></div>
+                    <div class="intro-counter"></div>
+                </div>
+
+                <img class="intro-character" src="assets/pingping-photo.png" alt="萍萍（张钰萍）">
+
+                <div class="speaker-tag" aria-hidden="true">
+                    <span class="speaker-heart">♥</span>
+                    <strong>萍萍</strong>
+                </div>
+
+                <div class="dialog-box">
+                    <p id="introText"></p>
+
+                    <button id="nextBtn" type="button">
+                        继续
+                        <span class="dialog-arrow">▼</span>
+                    </button>
+                </div>
+
+                
+
+            </div>
+        </section>
+
+        <section id="kitchen" hidden>
+            <div class="kitchen-scene">
+
+                <header class="kitchen-header">
+
+                    <div class="kitchen-title">
+                        <span>🎂</span>
+                        <strong>制作蛋糕胚</strong>
+                    </div>
+
+                    <div id="kitchenTip" class="kitchen-tip">
+                        拖动鸡蛋到上方的碗里，也可以轻点选择！
+                    </div>
+
+                </header>
+
+                <main class="kitchen-main">
+
+                    <aside class="step-panel">
+                        <h2>制作步骤</h2>
+
+                        <ol class="step-list">
+
+                            <li class="step-item active" data-step="egg">
+                                <span class="step-number">1</span>
+                                <span class="step-icon">🥚</span>
+                                <span class="step-name">加入鸡蛋</span>
+                                <span class="step-status"></span>
+                            </li>
+
+                            <li class="step-item locked" data-step="milk">
+                                <span class="step-number">2</span>
+                                <span class="step-icon">🥛</span>
+                                <span class="step-name">加入牛奶</span>
+                                <span class="step-status">🔒</span>
+                            </li>
+
+                            <li class="step-item locked" data-step="flour">
+                                <span class="step-number">3</span>
+                                <span class="step-icon">🌾</span>
+                                <span class="step-name">加入面粉</span>
+                                <span class="step-status">🔒</span>
+                            </li>
+
+                            <li class="step-item locked" data-step="mix">
+                                <span class="step-number">4</span>
+                                <span class="step-icon">🥣</span>
+                                <span class="step-name">搅拌面糊</span>
+                                <span class="step-status">🔒</span>
+                            </li>
+
+                        </ol>
+
+                        <p class="step-note">
+                            按顺序加入材料，完成蛋糕胚的制作。
+                        </p>
+                    </aside>
+
+                    <section class="work-area" aria-label="蛋糕制作区域">
+
+                        <div class="kitchen-background" aria-hidden="true">
+
+                            <div class="wall-tile"></div>
+
+                            <div class="wall-shelf">
+                                <span class="plant">🌿</span>
+                                <span class="jar">🍯</span>
+                                <span class="jar">🫙</span>
+                            </div>
+
+                            <div class="window">
+                                <div class="sky"></div>
+                                <div class="window-line vertical"></div>
+                                <div class="window-line horizontal"></div>
+                                <div class="curtain curtain-left"></div>
+                                <div class="curtain curtain-right"></div>
+                            </div>
+
+                            <div class="oven">
+                                <div class="oven-handle"></div>
+                                <div class="oven-door"></div>
+                                <div class="oven-knob"></div>
+                            </div>
+
+                        </div>
+
+                        <div id="animationStage" class="animation-stage">
+
+                            <div
+                                id="eggAnimation"
+                                class="egg-animation"
+                                aria-hidden="true"
+                            >
+                                <div class="egg-shell egg-shell-left"></div>
+                                <div class="egg-shell egg-shell-right"></div>
+                                <div class="egg-crack"></div>
+
+                                <div class="egg-white-stream"></div>
+                                <div class="egg-drop"></div>
+                                <div class="egg-yolk"></div>
+                            </div>
+
+                            <div
+                                id="milkAnimation"
+                                class="milk-animation"
+                                aria-hidden="true"
+                            >
+                                <div class="milk-carton">
+
+                                    <div class="milk-carton-top">
+                                        <div class="milk-spout"></div>
+                                    </div>
+
+                                    <div class="milk-carton-body">
+                                        <div class="milk-label">
+                                            <span class="milk-drop-icon">●</span>
+                                            <span>MILK</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                
+
+                                <div class="milk-stream"></div>
+                                <div class="milk-last-drop"></div>
+                            </div>
+                             <!-- 在这里插入 -->
+
+    <div id="flourAnimation" class="flour-animation" aria-hidden="true">
+
+        <div class="flour-bag">
+
+            <div class="bag-top"></div>
+
+            <div class="bag-body">
+                <div class="bag-label">
+                    FLOUR
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flour-stream"></div>
+
+        <div class="flour-dust"></div>
+
+    </div>
+
+                            <div id="mixingBowl" class="mixing-bowl">
+
+                                <div class="bowl-rim"></div>
+
+                                <div class="bowl-inside">
+                                    <div
+                                        id="bowlLiquid"
+                                        class="bowl-liquid"
+                                    ></div>
+
+                                    <div
+                                        id="milkSplash"
+                                        class="milk-splash"
+                                    ></div>
+
+                                    <div
+                                        id="bowlYolk"
+                                        class="bowl-yolk"
+                                    ></div>
+                                    <div
+                                        id="flourMix"
+                                        class="flour-mix"
+                                    ></div>
+                                    <div id="batterSurface" class="batter-surface"></div>
+                                    <div id="mixSparkles" class="mix-sparkles" aria-hidden="true">
+                                        <span>✦</span>
+                                        <span>✧</span>
+                                        <span>✦</span>
+                                    </div>
+                                </div>
+
+                                <div class="bowl-front">
+                                    <span class="bowl-heart">♥</span>
+                                </div>
+                                <div id="whisk" class="whisk">
+                                    <div class="whisk-handle"></div>
+                                    <div class="whisk-wire wire1"></div>
+                                    <div class="whisk-wire wire2"></div>
+                                    <div class="whisk-wire wire3"></div>
+                                    <div class="whisk-wire wire4"></div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="table-cloth"></div>
+                        <div class="counter"></div>
+
+                    </section>
+
+                </main>
+
+                <nav class="ingredient-bar" aria-label="材料选择">
+
+                    <button
+                        id="eggBtn"
+                        class="ingredient-card active"
+                        type="button"
+                        data-ingredient="egg"
+                    >
+                        <span class="ingredient-drag-source ingredient-model-source source-egg" data-drag-source="egg" aria-label="拖动鸡蛋"><span class="source-egg-shine"></span></span>
+                        <span class="ingredient-name">鸡蛋</span>
+                        <span class="ingredient-order">1</span>
+                    </button>
+
+                    <button
+                        id="milkBtn"
+                        class="ingredient-card"
+                        type="button"
+                        data-ingredient="milk"
+                        disabled
+                    >
+                        <span class="ingredient-drag-source ingredient-model-source source-milk" data-drag-source="milk" aria-label="拖动牛奶"><span class="source-milk-roof"></span><span class="source-milk-body"><span class="source-milk-label">MILK</span></span></span>
+                        <span class="ingredient-name">牛奶</span>
+                        <span class="ingredient-order">2</span>
+                        <span class="ingredient-lock">🔒</span>
+                    </button>
+
+                    <button
+                        id="flourBtn"
+                        class="ingredient-card"
+                        type="button"
+                        data-ingredient="flour"
+                        disabled
+                    >
+                        <span class="ingredient-drag-source ingredient-model-source source-flour" data-drag-source="flour" aria-label="拖动面粉"><span class="source-flour-fold"></span><span class="source-flour-body"><span class="source-flour-label">面粉</span></span></span>
+                        <span class="ingredient-name">面粉</span>
+                        <span class="ingredient-order">3</span>
+                        <span class="ingredient-lock">🔒</span>
+                    </button>
+
+                    <button
+                        id="mixBtn"
+                        class="ingredient-card"
+                        type="button"
+                        data-ingredient="mix"
+                        disabled
+                    >
+                        <span class="ingredient-icon">🥣</span>
+                        <span class="ingredient-name">搅拌</span>
+                        <span class="ingredient-order">4</span>
+                        <span class="ingredient-lock">🔒</span>
+                    </button>
+
+                    <button id="toPourBtn" class="next-stage-btn" type="button" hidden>
+                        下一步：倒入模具 ▶
+                    </button>
+
+                </nav>
+
+            </div>
+        </section>
+
+        <section id="pourScene" hidden>
+            <div class="pour-scene">
+                <header class="pour-header">
+                    <div class="pour-title"><span>🥣</span><strong>倒入蛋糕模具</strong></div>
+                    <div id="pourTip" class="pour-tip">点击按钮，把搅好的面糊倒进模具吧！</div>
+                </header>
+
+                <div class="pour-work-area">
+                    <div id="pourBowl" class="pour-bowl" aria-hidden="true">
+                        <div class="pour-bowl-rim"></div>
+                        <div id="pourBatterInside" class="pour-batter-inside"></div>
+                        <div class="pour-bowl-front"><span>♥</span></div>
+                    </div>
+
+                    <div id="batterStream" class="batter-stream" aria-hidden="true"></div>
+
+                    <div id="cakeMold" class="cake-mold" aria-hidden="true">
+                        <div class="mold-rim"></div>
+                        <div class="mold-inside"><div id="moldBatter" class="mold-batter"></div></div>
+                        <div class="mold-front"></div>
+                    </div>
+
+                    <div id="pourSparkles" class="pour-sparkles" aria-hidden="true">
+                        <span>✦</span><span>✧</span><span>✦</span>
+                    </div>
+                </div>
+
+                <div class="pour-actions">
+                    <button id="pourBtn" class="pour-action-btn" type="button">
+                        倒入模具
+                    </button>
+
+                    <button id="toOvenBtn" class="pour-next-btn" type="button" hidden>
+                        下一步：送进烤箱 ▶
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="ovenScene" hidden>
+            <div class="oven-scene">
+
+                <header class="oven-scene-header">
+                    <div class="oven-scene-title">
+                        <span>🔥</span>
+                        <strong>烘烤蛋糕胚</strong>
+                    </div>
+
+                    <div id="ovenTip" class="oven-scene-tip">
+                        点击按钮，把装好面糊的模具送进烤箱吧！
+                    </div>
+                </header>
+
+                <div class="oven-work-area">
+
+                    <div id="ovenTray" class="oven-tray" aria-hidden="true">
+                        <div class="oven-tray-rim"></div>
+                        <div class="oven-tray-batter"></div>
+                        <div class="oven-tray-front"></div>
+                    </div>
+
+                    <div id="bigOven" class="big-oven" aria-hidden="true">
+                        <div class="big-oven-panel">
+                            <span class="oven-control oven-control-left"></span>
+                            <div id="ovenDisplay" class="oven-display">180°C</div>
+                            <span class="oven-control oven-control-right"></span>
+                        </div>
+
+                        <div id="ovenGlow" class="oven-glow"></div>
+
+                        <div class="oven-cavity">
+                            <div id="ovenCake" class="oven-cake">
+                                <div class="oven-cake-top"></div>
+                                <div class="oven-cake-body"></div>
+                            </div>
+
+                            <div id="ovenFlames" class="oven-flames">
+                                <span>🔥</span>
+                                <span>🔥</span>
+                                <span>🔥</span>
+                            </div>
+                        </div>
+
+                        <div id="ovenDoor" class="big-oven-door">
+                            <div class="big-oven-door-window"></div>
+                            <div class="big-oven-door-handle"></div>
+                        </div>
+                    </div>
+
+                    <div id="ovenSteam" class="oven-steam" aria-hidden="true">
+                        <span>♨</span>
+                        <span>♨</span>
+                        <span>♨</span>
+                    </div>
+
+                    <div id="ovenDing" class="oven-ding" aria-hidden="true">
+                        DING！
+                    </div>
+
+                    <div id="ovenSparkles" class="oven-sparkles" aria-hidden="true">
+                        <span>✦</span>
+                        <span>✧</span>
+                        <span>✦</span>
+                    </div>
+
+                </div>
+
+                <div class="oven-actions">
+                    <button id="bakeBtn" class="oven-action-btn" type="button">
+                        放进烤箱
+                    </button>
+
+                    <button id="toDecorateBtn" class="oven-next-btn" type="button" hidden>
+                        下一步：开始装饰 ▶
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="decorateScene" hidden>
+            <div class="decorate-scene">
+
+                <header class="decorate-header">
+                    <div class="decorate-title">
+                        <span>🎂</span>
+                        <strong>装饰生日蛋糕</strong>
+                    </div>
+
+                    <div id="decorateTip" class="decorate-tip">
+                        先给蛋糕抹上一层香甜的奶油吧！
+                    </div>
+                </header>
+
+                <div class="decorate-main">
+                    <aside class="decorate-panel">
+                        <h2>装饰步骤</h2>
+
+                        <div class="decorate-step active" data-decorate-step="cream">
+                            <span>1</span>
+                            <strong>抹奶油</strong>
+                            <em id="creamStatus"></em>
+                        </div>
+
+                        <div class="decorate-step locked" data-decorate-step="fruit">
+                            <span>2</span>
+                            <strong>摆放水果</strong>
+                            <em id="fruitStatus">🔒</em>
+                        </div>
+
+                        <p class="decorate-note">
+                            按住鼠标或触摸屏拖动裱花袋，在蛋糕表面涂抹奶油。
+                            <br>
+                            <strong id="creamProgress">奶油覆盖：0%</strong>
+                            <br><br>
+                            水果落到蛋糕上后，可以拖动它们调整位置。
+                        </p>
+                    </aside>
+
+                    <aside class="layer-panel" aria-label="蛋糕层数选择">
+                        <h2>选择蛋糕层数</h2>
+                        <button class="layer-choice selected" type="button" data-layers="1" aria-pressed="true"><span class="layer-thumb one"></span><strong>单层</strong></button>
+                        <button class="layer-choice" type="button" data-layers="2" aria-pressed="false"><span class="layer-thumb two"></span><strong>双层</strong></button>
+                        <button class="layer-choice" type="button" data-layers="3" aria-pressed="false"><span class="layer-thumb three"></span><strong>三层</strong></button>
+                        <p id="layerChoiceHelp">当前：单层蛋糕</p>
+                    </aside>
+
+                    <section class="decorate-work-area">
+                        <div class="decorate-wall"></div>
+                        <div class="decorate-counter"></div>
+
+                        <div id="creamBag" class="cream-bag" aria-hidden="true">
+                            <div id="creamBagBody" class="cream-bag-body">香草</div>
+                            <div class="cream-bag-tip"></div>
+                        </div>
+
+                        <div class="cake-stand" aria-hidden="true">
+                            <div class="stand-plate"></div>
+                            <div class="stand-stem"></div>
+                            <div class="stand-base"></div>
+                        </div>
+
+                        <div id="decorateCake" class="decorate-cake separate-models layers-1">
+                            <div class="cake-model cake-model-1 active" data-cake-model="1">
+                                <div class="cake-tier tier-large">
+                                    <div class="tier-side"></div>
+                                    <div class="tier-wave tier-wave-bottom"></div>
+                                    <div class="top-area-mount" data-top-mount="1"></div>
+                                </div>
+                            </div>
+
+                            <div class="cake-model cake-model-2" data-cake-model="2" hidden>
+                                <div class="cake-tier tier-large tier-bottom">
+                                    <div class="tier-side"></div>
+                                    <div class="tier-wave tier-wave-bottom"></div>
+                                </div>
+                                <div class="cake-tier tier-medium tier-top">
+                                    <div class="tier-side"></div>
+                                    <div class="tier-wave tier-wave-middle"></div>
+                                    <div class="tier-wave tier-wave-bottom"></div>
+                                    <div class="top-area-mount" data-top-mount="2"></div>
+                                </div>
+                            </div>
+
+                            <div class="cake-model cake-model-3" data-cake-model="3" hidden>
+                                <div class="cake-tier tier-large tier-bottom">
+                                    <div class="tier-side"></div>
+                                    <div class="tier-wave tier-wave-bottom"></div>
+                                </div>
+                                <div class="cake-tier tier-medium tier-middle">
+                                    <div class="tier-side"></div>
+                                    <div class="tier-wave tier-wave-middle"></div>
+                                    <div class="tier-wave tier-wave-bottom"></div>
+                                </div>
+                                <div class="cake-tier tier-small tier-top">
+                                    <div class="tier-side"></div>
+                                    <div class="tier-wave tier-wave-middle"></div>
+                                    <div class="tier-wave tier-wave-bottom"></div>
+                                    <div class="top-area-mount" data-top-mount="3"></div>
+                                </div>
+                            </div>
+
+                            <div id="cakeTopArea" class="cake-top-area" aria-label="可拖动水果的蛋糕表面">
+                                <div class="cake-top-baked"></div>
+                                <canvas id="creamCanvas" class="cream-canvas" width="400" height="112" aria-label="可涂抹奶油的蛋糕表面"></canvas>
+                                <div class="cake-top-cream"></div>
+                                <div id="creamRosettes" class="cream-rosettes wave-finish" aria-hidden="true"></div>
+                            </div>
+                            <div id="fruitPlacementArea" class="fruit-placement-area" aria-label="可在蛋糕顶部和侧面拖动水果"></div>
+                        </div>
+
+                        <div id="decorateSparkles" class="decorate-sparkles" aria-hidden="true">
+                            <span>✦</span><span>✧</span><span>✦</span>
+                        </div>
+                    </section>
+
+                    <div class="decorate-side-rack">
+                    <aside class="cream-panel">
+                        <section class="cream-choice-panel cream-choice-sidebar" aria-label="奶油种类选择">
+                            <h2>奶油篮</h2>
+                            <p id="creamChoiceHelp">先选择，再开始涂抹</p>
+                            <div class="cream-choice-grid">
+                                <button class="cream-choice selected" type="button" data-cream="vanilla" aria-pressed="true"><span class="cream-swatch vanilla"></span><strong>香草</strong></button>
+                                <button class="cream-choice" type="button" data-cream="strawberry" aria-pressed="false"><span class="cream-swatch strawberry"></span><strong>草莓</strong></button>
+                                <button class="cream-choice" type="button" data-cream="chocolate" aria-pressed="false"><span class="cream-swatch chocolate"></span><strong>巧克力</strong></button>
+                                <button class="cream-choice" type="button" data-cream="matcha" aria-pressed="false"><span class="cream-swatch matcha"></span><strong>抹茶</strong></button>
+                                <button class="cream-choice" type="button" data-cream="blueberry" aria-pressed="false"><span class="cream-swatch blueberry"></span><strong>蓝莓</strong></button>
+                            </div>
+                        </section>
+                    </aside>
+
+                    <aside class="fruit-panel">
+                        <h2>水果篮</h2>
+                        <p id="fruitHelp">完成奶油后解锁</p>
+
+                        <button class="fruit-choice" type="button" data-fruit="strawberry" disabled>
+                            <span>🍓</span>
+                            <strong>草莓</strong>
+                            <em>已放 0</em>
+                        </button>
+
+                        <button class="fruit-choice" type="button" data-fruit="blueberry" disabled>
+                            <span>🫐</span>
+                            <strong>蓝莓</strong>
+                            <em>已放 0</em>
+                        </button>
+
+                        <button class="fruit-choice" type="button" data-fruit="kiwi" disabled>
+                            <span>🥝</span>
+                            <strong>猕猴桃</strong>
+                            <em>已放 0</em>
+                        </button>
+                    </aside>
+                    </div>
+                </div>
+
+                <div class="decorate-actions">
+                    <button id="creamBtn" class="decorate-action-btn" type="button">
+                        开始手动涂奶油
+                    </button>
+
+                    <button id="resetFruitBtn" class="decorate-secondary-btn" type="button" hidden>
+                        重新摆放
+                    </button>
+
+                    <button id="confirmDecorateBtn" class="decorate-confirm-btn" type="button" hidden>
+                        确认装饰 ✓
+                    </button>
+
+                    <button id="toCandleBtn" class="decorate-next-btn" type="button" hidden>
+                        下一步：插上蜡烛 ▶
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="candleScene" hidden>
+            <div id="birthdayFinale" class="birthday-finale" hidden>
+                    <div id="confettiField" class="confetti-field" aria-hidden="true"></div>
+                    <div class="birthday-finale-card">
+                        <div class="finale-icon">🎂</div>
+                        <h2>生日快乐，婷婷！</h2>
+                        <p>愿新的一岁，所有期待都如约而至，<br>每天都有值得开心的小事。</p>
+                        <div class="finale-hearts">♡ ✦ ♡</div>
+                        <button id="replayBirthdayBtn" type="button">再看一次蜡烛 ✨</button>
+                    </div>
+                </div>
+
+            <div class="candle-scene">
+                <div class="candle-night-overlay" aria-hidden="true"></div>
+
+                <header class="candle-header">
+                    <div class="candle-title">
+                        <span>🕯️</span>
+                        <strong>插上生日蜡烛</strong>
+                    </div>
+                    <div id="candleTip" class="candle-tip">请选择一种蜡烛放到蛋糕上。</div>
+                </header>
+
+                <div class="candle-main">
+                    <aside class="candle-choice-panel">
+                        <h2>选择蜡烛</h2>
+                        <button class="candle-choice" type="button" data-candle="normal">
+                            <span class="candle-choice-preview normal-preview">🕯️ 🕯️ 🕯️</span>
+                            <strong>普通蜡烛</strong>
+                            <em>五根彩色蜡烛</em>
+                        </button>
+                        <button class="candle-choice" type="button" data-candle="23">
+                            <span class="candle-choice-preview number-preview">23</span>
+                            <strong>23 数字蜡烛</strong>
+                            <em>专属生日数字</em>
+                        </button>
+                    </aside>
+
+                    <section class="candle-work-area">
+                        <div class="candle-wall"></div>
+                        <div class="candle-counter"></div>
+                        <div class="candle-glow" aria-hidden="true"></div>
+
+                        <div class="candle-cake-stand" aria-hidden="true">
+                            <div class="stand-plate"></div>
+                            <div class="stand-stem"></div>
+                            <div class="stand-base"></div>
+                        </div>
+
+                        <div id="candleCakeMount" class="candle-cake-mount"></div>
+                        <div id="candleLayer" class="candle-layer" aria-label="蛋糕蜡烛"></div>
+
+                        <div id="candleSparkles" class="candle-sparkles" aria-hidden="true">
+                            <span>✦</span><span>✧</span><span>✦</span><span>✧</span>
+                        </div>
+
+                        <div class="candle-actions" aria-label="蜡烛操作">
+
+    <div
+        id="blowChoiceTitle"
+        class="blow-choice-title"
+        hidden
+    >
+        请选择一种吹蜡烛方式（任选其一）
+    </div>
+
+    <button
+        id="changeCandleBtn"
+        class="candle-secondary-btn"
+        type="button"
+        hidden
+    >
+        重新选择
+    </button>
+
+    <button
+        id="confirmCandleBtn"
+        class="candle-confirm-btn"
+        type="button"
+        disabled
+    >
+        确认蜡烛 ✓
+    </button>
+
+    <button
+        id="lightCandleBtn"
+        class="candle-light-btn"
+        type="button"
+        hidden
+    >
+        🔥 点燃蜡烛
+    </button>
+
+    <button
+        id="wishBtn"
+        class="candle-wish-btn"
+        type="button"
+        hidden
+    >
+        闭上眼睛，开始许愿 ✨
+    </button>
+
+    <button
+        id="wishDoneBtn"
+        class="candle-wish-done-btn"
+        type="button"
+        hidden
+    >
+        我许好了 💫
+    </button>
+
+    <button
+        id="blowBtn"
+        class="candle-blow-btn"
+        type="button"
+        hidden
+    >
+        💨 点击吹灭蜡烛
+    </button>
+
+    <button
+        id="micBlowBtn"
+        class="candle-mic-btn"
+        type="button"
+        hidden
+    >
+        🎤 对着麦克风吹气
+    </button>
+
+</div>
+                    </section>
+
+                    <aside class="candle-status-panel">
+                        <h2>生日准备</h2>
+                        <div class="candle-status active" data-candle-status="choose"><span>1</span><strong>选择蜡烛</strong><em>●</em></div>
+                        <div class="candle-status locked" data-candle-status="insert"><span>2</span><strong>确认插好</strong><em>🔒</em></div>
+                        <div class="candle-status locked" data-candle-status="light"><span>3</span><strong>点燃蜡烛</strong><em>🔒</em></div>
+                        <p>选择后可以先预览；确认蜡烛后再点燃。</p>
+                    </aside>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <script src="js/scene.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/game-model-v16.js?v=16"></script>
+
+<script>
+(() => {
+    const mainMenu = document.getElementById('mainMenu');
+    const modal = document.getElementById('menuModal');
+    const panel = document.getElementById('menuPanel');
+    const bgm = document.getElementById('menuBgm');
+    const closeBtn = document.getElementById('menuClose');
+
+    const openModal = (html) => {
+        panel.innerHTML = html;
+        modal.hidden = false;
+    };
+    const closeModal = () => { modal.hidden = true; };
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    const ensureMusic = () => {
+        if (bgm.paused) bgm.play().catch(() => {});
+    };
+    document.addEventListener('pointerdown', ensureMusic, { once: true });
+
+    document.getElementById('menuStart').addEventListener('click', () => {
+        ensureMusic();
+        mainMenu.classList.add('menu-leaving');
+        setTimeout(() => {
+            mainMenu.style.display = 'none';
+            document.getElementById('startBtn').click();
+        }, 360);
+    });
+
+    document.getElementById('menuHelp').addEventListener('click', () => {
+        openModal(`
+            <div class="dialog-icon">📖</div>
+            <h2 id="menuDialogTitle">游戏说明</h2>
+            <div class="help-copy">
+                <p>跟随画面提示完成一份专属生日蛋糕。</p>
+                <ol>
+                    <li>制作蛋糕胚：用鼠标或触屏把鸡蛋、牛奶和面粉拖进碗中，再进行搅拌。</li>
+                    <li>烘烤蛋糕：按提示控制烘烤流程。</li>
+                    <li>装饰蛋糕：涂抹奶油、摆放水果。</li>
+                    <li>插上蜡烛、许愿并吹灭蜡烛。</li>
+                </ol>
+            </div>
+            <button class="dialog-primary" id="helpOk" type="button">知道啦</button>`);
+        document.getElementById('helpOk').onclick = closeModal;
+    });
+
+    document.getElementById('menuMusic').addEventListener('click', () => {
+        const pct = Math.round(bgm.volume * 100);
+        openModal(`
+            <div class="dialog-icon">🎵</div>
+            <h2 id="menuDialogTitle">音乐设置</h2>
+            <div class="music-row">
+                <span id="musicState">${bgm.muted ? '🔇' : '🔊'}</span>
+                <input id="musicVolume" type="range" min="0" max="100" value="${pct}" aria-label="音乐音量">
+                <strong id="musicValue">${pct}%</strong>
+            </div>
+            <button class="dialog-secondary" id="musicToggle" type="button">${bgm.muted ? '开启音乐' : '关闭音乐'}</button>
+            <button class="dialog-primary" id="musicOk" type="button">完成</button>`);
+        const range = document.getElementById('musicVolume');
+        range.oninput = () => {
+            bgm.volume = Number(range.value) / 100;
+            bgm.muted = false;
+            document.getElementById('musicValue').textContent = range.value + '%';
+            document.getElementById('musicState').textContent = Number(range.value) === 0 ? '🔇' : '🔊';
+            document.getElementById('musicToggle').textContent = '关闭音乐';
+            ensureMusic();
+        };
+        document.getElementById('musicToggle').onclick = (e) => {
+            bgm.muted = !bgm.muted;
+            e.currentTarget.textContent = bgm.muted ? '开启音乐' : '关闭音乐';
+            document.getElementById('musicState').textContent = bgm.muted ? '🔇' : '🔊';
+            if (!bgm.muted) ensureMusic();
+        };
+        document.getElementById('musicOk').onclick = closeModal;
+    });
+
+    document.getElementById('menuExit').addEventListener('click', () => {
+        openModal(`
+            <div class="dialog-icon">🚪</div>
+            <h2 id="menuDialogTitle">退出游戏</h2>
+            <p class="exit-copy">确定要离开婷婷的烘焙日记吗？</p>
+            <div class="dialog-actions">
+                <button class="dialog-secondary" id="exitCancel" type="button">继续玩</button>
+                <button class="dialog-danger" id="exitConfirm" type="button">确认退出</button>
+            </div>`);
+        document.getElementById('exitCancel').onclick = closeModal;
+        document.getElementById('exitConfirm').onclick = () => {
+            window.close();
+            panel.innerHTML = '<div class="dialog-icon">🍰</div><h2>感谢游玩</h2><p class="exit-copy">浏览器未允许自动关闭页面，请直接关闭当前标签页。</p><button class="dialog-primary" id="exitBack" type="button">返回首页</button>';
+            document.getElementById('exitBack').onclick = closeModal;
+        };
+    });
+})();
+</script>
+<script>
+(function () {
+    const MOBILE_LIMIT = 980;
+    const DESIGN_WIDTH = 1366;
+    const DESIGN_HEIGHT = 768;
+    const game = document.getElementById('game');
+    if (!game || Math.min(screen.width || innerWidth, screen.height || innerHeight) > MOBILE_LIMIT) return;
+
+    const viewport = document.createElement('div');
+    viewport.className = 'mobile-game-viewport';
+    game.parentNode.insertBefore(viewport, game);
+    viewport.appendChild(game);
+    game.classList.add('mobile-fit-canvas');
+
+    function fitMobileGame() {
+        const visual = window.visualViewport;
+        const screenW = visual ? visual.width : window.innerWidth;
+        const screenH = visual ? visual.height : window.innerHeight;
+        const portrait = screenH > screenW;
+
+        viewport.classList.toggle('is-portrait', portrait);
+
+        // 竖屏时先把可用区域交换，再把整个游戏旋转 90 度。
+        const availableW = portrait ? screenH : screenW;
+        const availableH = portrait ? screenW : screenH;
+        const scale = Math.min(availableW / DESIGN_WIDTH, availableH / DESIGN_HEIGHT);
+        const left = Math.max(0, (availableW - DESIGN_WIDTH * scale) / 2);
+        const top = Math.max(0, (availableH - DESIGN_HEIGHT * scale) / 2);
+
+        game.style.transform = `translate(${left}px, ${top}px) scale(${scale})`;
+    }
+
+    fitMobileGame();
+    window.addEventListener('resize', fitMobileGame, { passive: true });
+    window.addEventListener('orientationchange', () => setTimeout(fitMobileGame, 180), { passive: true });
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', fitMobileGame, { passive: true });
+    }
+})();
+</script>
+
+</body>
+</html>

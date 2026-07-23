@@ -1,0 +1,137 @@
+html, body { width:100%; height:100%; min-height:100%; overflow:hidden; background:#f7a0b2; }
+.main-menu {
+  position:fixed; inset:0; z-index:9999;
+  background:#f7a0b2; overflow:hidden; opacity:1;
+  transition:opacity .36s ease, transform .36s ease;
+}
+.main-menu.menu-leaving { opacity:0; transform:scale(1.025); pointer-events:none; }
+
+/*
+ * 封面原图比例为 3:2。这里使用 contain 逻辑：
+ * 任何电脑、平板或手机都完整显示整张封面，不再裁掉标题、人物或按钮。
+ */
+.main-menu-cover,
+.menu-actions {
+  position:absolute; left:50%; top:50%;
+  width:min(100vw, calc(100dvh * 3 / 2));
+  height:min(100dvh, calc(100vw * 2 / 3));
+  transform:translate(-50%, -50%);
+}
+.main-menu-cover {
+  object-fit:fill; user-select:none; -webkit-user-drag:none;
+}
+/* 菜单按钮与封面共用同一个 3:2 坐标画布，缩放后仍然准确对齐。 */
+.menu-actions { pointer-events:none; }
+
+@supports not (height: 100dvh) {
+  .main-menu-cover, .menu-actions {
+    width:min(100vw, calc(100vh * 3 / 2));
+    height:min(100vh, calc(100vw * 2 / 3));
+  }
+}
+.menu-action {
+  position:absolute; left:55.0%; width:31.5%; height:10.0%;
+  display:flex; align-items:center; justify-content:center; gap:5%;
+  padding:0 4%; border:3px solid #f1a1aa; border-radius:999px;
+  color:#6f351f; background:linear-gradient(180deg,#fff9ec,#ffe8dc);
+  box-shadow:0 .65vh 0 rgba(163,65,62,.30), inset 0 0 0 5px rgba(255,255,255,.68);
+  font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+  font-size:clamp(17px,2.2vw,36px); font-weight:900; letter-spacing:.06em;
+  cursor:pointer; pointer-events:auto; transition:transform .14s ease, filter .14s ease, box-shadow .14s ease;
+}
+.menu-action::after { content:""; position:absolute; inset:9%; border:2px dashed rgba(224,131,129,.65); border-radius:999px; pointer-events:none; }
+.menu-action:hover,.menu-action:focus-visible { transform:translateY(-3px) scale(1.015); filter:brightness(1.035); outline:none; box-shadow:0 10px 0 rgba(163,65,62,.30),0 15px 28px rgba(112,44,39,.22),inset 0 0 0 5px rgba(255,255,255,.75); }
+.menu-action:active { transform:translateY(4px) scale(.99); box-shadow:0 3px 0 rgba(163,65,62,.30),inset 0 0 0 5px rgba(255,255,255,.68); }
+.menu-action-icon { display:inline-grid; place-items:center; width:1.25em; font-size:1.05em; }
+#menuStart { top:42.5%; }
+#menuHelp  { top:55.2%; }
+#menuMusic { top:67.9%; }
+#menuExit  { top:80.6%; }
+.menu-modal { position:absolute; inset:0; display:grid; place-items:center; padding:24px; background:rgba(96,34,48,.45); backdrop-filter:blur(8px); animation:modalFade .2s ease; }
+.menu-modal[hidden] { display:none; }
+.menu-dialog { position:relative; width:min(520px, 92vw); padding:34px 34px 28px; border:4px solid #f1a1aa; border-radius:30px; color:#66321f; text-align:center; background:linear-gradient(180deg,#fffaf1,#ffeade); box-shadow:0 24px 80px rgba(85,29,37,.35), inset 0 0 0 7px rgba(255,255,255,.72); animation:dialogPop .25s cubic-bezier(.2,.8,.2,1); }
+.menu-dialog h2 { margin:4px 0 18px; font-size:30px; color:#6a341f; }
+.menu-close { position:absolute; top:12px; right:16px; width:38px; height:38px; border:0; border-radius:50%; color:#984c4b; background:#ffd7da; font-size:28px; line-height:1; cursor:pointer; }
+.dialog-icon { font-size:48px; }
+.help-copy { text-align:left; font-size:17px; line-height:1.75; }
+.help-copy p { margin:0 0 10px; }
+.help-copy ol { margin:0 0 20px; padding-left:24px; }
+.music-row { display:flex; align-items:center; gap:14px; margin:22px 0; padding:18px; border-radius:18px; background:#fff4ef; }
+.music-row span { font-size:28px; }
+.music-row input { flex:1; accent-color:#ed7f91; }
+.music-row strong { min-width:52px; }
+.exit-copy { font-size:18px; line-height:1.7; }
+.dialog-actions { display:flex; justify-content:center; gap:14px; }
+.dialog-primary,.dialog-secondary,.dialog-danger { min-width:120px; margin:8px 6px 0; padding:12px 22px; border:0; border-radius:999px; font-size:17px; font-weight:700; cursor:pointer; box-shadow:0 6px 0 rgba(109,48,35,.18); }
+.dialog-primary { color:white; background:linear-gradient(#ff9aac,#ec718a); }
+.dialog-secondary { color:#743a2a; background:#ffe1d7; }
+.dialog-danger { color:white; background:linear-gradient(#f58a79,#dc5c52); }
+.dialog-primary:active,.dialog-secondary:active,.dialog-danger:active { transform:translateY(3px); box-shadow:0 3px 0 rgba(109,48,35,.18); }
+@keyframes modalFade { from { opacity:0; } to { opacity:1; } }
+@keyframes dialogPop { from { opacity:0; transform:translateY(18px) scale(.94); } to { opacity:1; transform:none; } }
+
+
+/* 窄屏保护：保持按钮文字完整并避免浏览器自动放大。 */
+@media (max-aspect-ratio: 3/2) {
+  .menu-action {
+    border-width:clamp(1px, .18vw, 3px);
+    box-shadow:0 clamp(2px,.45vw,7px) 0 rgba(163,65,62,.30), inset 0 0 0 clamp(2px,.35vw,5px) rgba(255,255,255,.68);
+    font-size:clamp(8px, 2.2vw, 24px);
+  }
+  .menu-action::after { border-width:clamp(1px,.12vw,2px); }
+}
+
+/* =========================================================
+   手机专用：自动横屏画布 + 整体缩放
+   - 竖着拿手机时，游戏画面自动旋转为横屏方向。
+   - 所有游戏场景按 1366 x 768 的完整画布等比缩放，按钮不会跑出屏幕。
+   - 不依赖浏览器的“锁定横屏”权限。
+========================================================= */
+.mobile-game-viewport {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: #d7ac87;
+  touch-action: none;
+}
+.mobile-game-viewport.is-portrait {
+  width: 100dvh;
+  height: 100dvw;
+  inset: auto;
+  left: 0;
+  top: 0;
+  transform-origin: top left;
+  transform: rotate(90deg) translateY(-100%);
+}
+.mobile-fit-canvas {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 1366px !important;
+  height: 768px !important;
+  min-width: 1366px !important;
+  min-height: 768px !important;
+  transform-origin: top left !important;
+  overflow: hidden !important;
+}
+.mobile-fit-canvas > section {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+.mobile-fit-canvas .kitchen-scene,
+.mobile-fit-canvas .intro-scene,
+.mobile-fit-canvas .decorate-scene,
+.mobile-fit-canvas .candle-scene {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+@supports not (height: 100dvh) {
+  .mobile-game-viewport.is-portrait {
+    width: 100vh;
+    height: 100vw;
+  }
+}
